@@ -1,7 +1,7 @@
 # Traverse VSCode Extension (Preview)
 
 ![Preview](https://img.shields.io/badge/Status-Preview-orange)
-![Version](https://img.shields.io/badge/Version-0.1.0-blue)
+![Version](https://img.shields.io/badge/Version-0.1.1-blue)
 
 > **PREVIEW RELEASE**: This extension is in active development and experimental. Features may change, and bugs are expected. Please report issues to help us improve!
 
@@ -9,12 +9,12 @@ This is the Visual Studio Code extension for Traverse, which provides Solidity s
 
 ## Install
 
-### From Marketplace (Coming Soon)
-The extension will be available on the VS Code Marketplace.
+### From Marketplace
+Install directly from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=GianlucaBrigandi.traverse-vscode) or search for "Traverse Solidity Analyzer" in VS Code Extensions.
 
 ### From VSIX
 ```bash
-code --install-extension traverse-vscode-0.1.0.vsix
+code --install-extension traverse-vscode-0.1.1.vsix
 ```
 
 ### First Run Setup
