@@ -2,6 +2,9 @@ name: Release and Publish VSIX
 
 on:
   workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
 
 jobs:
   create-draft-release:
