@@ -1,0 +1,181 @@
+{
+  "name": "traverse-vscode",
+  "displayName": "Traverse Solidity Analyzer",
+  "description": "PREVIEW: Solidity code analysis and visualization powered by Traverse - Experimental features, expect changes",
+  "version": "0.1.1",
+  "publisher": "GianlucaBrigandi",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/calltrace/traverse-lsp"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/calltrace/traverse-lsp/issues"
+  },
+  "homepage": "https://github.com/calltrace/traverse-lsp#readme",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "icon": "icon.png",
+  "categories": [
+    "Programming Languages",
+    "Linters",
+    "Visualization"
+  ],
+  "keywords": [
+    "solidity",
+    "ethereum",
+    "smart contracts",
+    "call graph",
+    "mermaid",
+    "preview",
+    "experimental"
+  ],
+  "preview": true,
+  "galleryBanner": {
+    "color": "#FF6B35",
+    "theme": "dark"
+  },
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "languages": [
+      {
+        "id": "solidity",
+        "aliases": [
+          "Solidity",
+          "solidity"
+        ],
+        "extensions": [
+          ".sol"
+        ],
+        "configuration": "./language-configuration.json"
+      }
+    ],
+    "configuration": {
+      "title": "Traverse LSP",
+      "properties": {
+        "traverse-lsp.trace.server": {
+          "scope": "window",
+          "type": "string",
+          "enum": [
+            "off",
+            "messages",
+            "verbose"
+          ],
+          "default": "off",
+          "description": "Traces the communication between VSCode and the Traverse LSP server"
+        },
+        "traverse-lsp.serverPath": {
+          "scope": "machine",
+          "type": "string",
+          "default": "",
+          "description": "Path to the Traverse LSP server executable. If empty, uses the bundled server"
+        },
+        "traverse-lsp.maxNumberOfProblems": {
+          "scope": "resource",
+          "type": "number",
+          "default": 100,
+          "description": "Controls the maximum number of problems produced by the server"
+        }
+      }
+    },
+    "commands": [
+      {
+        "command": "traverse.generateCallGraph.workspace",
+        "title": "Generate Call Graph (Workspace)",
+        "category": "Traverse"
+      },
+      {
+        "command": "traverse.generateSequenceDiagram.workspace",
+        "title": "Generate Sequence Diagram (Workspace)",
+        "category": "Traverse"
+      },
+      {
+        "command": "traverse.generateAll.workspace",
+        "title": "Generate All Diagrams (Workspace)",
+        "category": "Traverse"
+      },
+      {
+        "command": "traverse.analyzeStorage.workspace",
+        "title": "Analyze Storage (Workspace)",
+        "category": "Traverse"
+      },
+      {
+        "command": "traverse.restart",
+        "title": "Restart Language Server",
+        "category": "Traverse"
+      },
+      {
+        "command": "traverse.downloadServer",
+        "title": "Download Language Server",
+        "category": "Traverse"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "when": "explorerResourceIsFolder",
+          "command": "traverse.generateCallGraph.workspace",
+          "group": "traverse@1"
+        },
+        {
+          "when": "explorerResourceIsFolder",
+          "command": "traverse.generateSequenceDiagram.workspace",
+          "group": "traverse@2"
+        },
+        {
+          "when": "explorerResourceIsFolder",
+          "command": "traverse.generateAll.workspace",
+          "group": "traverse@3"
+        },
+        {
+          "when": "explorerResourceIsFolder",
+          "command": "traverse.analyzeStorage.workspace",
+          "group": "traverse@4"
+        }
+      ],
+      "commandPalette": [
+        {
+          "command": "traverse.generateCallGraph.workspace"
+        },
+        {
+          "command": "traverse.generateSequenceDiagram.workspace"
+        },
+        {
+          "command": "traverse.generateAll.workspace"
+        },
+        {
+          "command": "traverse.analyzeStorage.workspace"
+        },
+        {
+          "command": "traverse.restart"
+        },
+        {
+          "command": "traverse.downloadServer"
+        }
+      ]
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run package",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "webpack --mode production",
+    "webpack": "webpack --mode development",
+    "webpack-dev": "webpack --mode development --watch"
+  },
+  "dependencies": {
+    "vscode-languageclient": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.85.0",
+    "ts-loader": "^9.5.4",
+    "typescript": "^5.0.0",
+    "webpack": "^5.101.3",
+    "webpack-cli": "^6.0.1"
+  }
+}

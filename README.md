@@ -1,0 +1,94 @@
+# Traverse VSCode Extension (Preview)
+
+![Preview](https://img.shields.io/badge/Status-Preview-orange)
+![Version](https://img.shields.io/badge/Version-0.1.0-blue)
+
+> **PREVIEW RELEASE**: This extension is in active development and experimental. Features may change, and bugs are expected. Please report issues to help us improve!
+
+This is the Visual Studio Code extension for Traverse, which provides Solidity smart contract visualization with automatic call graph and sequence diagram generation. The extension uses the Traverse Rust LSP server to analyze and visualize your Solidity code.
+
+## Install
+
+### From Marketplace (Coming Soon)
+The extension will be available on the VS Code Marketplace.
+
+### From VSIX
+```bash
+code --install-extension traverse-vscode-0.1.0.vsix
+```
+
+### First Run Setup
+On first activation, the extension will prompt you to download the Traverse LSP server binary for your platform. The binary is downloaded from GitHub releases and stored in VS Code's global storage.
+
+**Supported Platforms:**
+- macOS (Intel & Apple Silicon)
+- Linux (x64 & ARM64)
+- Windows (x64)
+
+You can also manually download the server using:
+- Command Palette: `Traverse: Download Language Server`
+- Or set a custom path in settings: `traverse-lsp.serverPath`
+
+## Usage
+
+1. Open a Solidity project
+2. Right-click any folder → Select "Traverse" commands
+3. Diagrams are saved to `traverse-output/` in your workspace
+
+**Available Commands** (Cmd+Shift+P):
+
+- `Generate Call Graph` - Visualize function relationships
+- `Generate Sequence Diagram` - Show execution flow
+- `Analyze Storage` - Map storage variables
+- `Generate All Diagrams` - Everything at once
+
+## Security Notice
+
+This extension downloads the Traverse LSP server binary from GitHub releases on first use. The binary is:
+- Downloaded over HTTPS from the official GitHub repository
+- Stored in VS Code's secure global storage directory
+- Made executable only for the current user
+- Never executed with elevated privileges
+
+You can inspect the source code at: https://github.com/calltrace/traverse-lsp
+
+## Features
+
+### Call Graph Generation
+
+Generates DOT format graphs showing all function calls and relationships.
+
+### Sequence Diagrams
+
+Creates Mermaid sequence diagrams for contract interactions.
+
+### Storage Analysis
+
+Maps all storage variables and their access patterns across functions.
+
+## Known Limitations (Preview)
+
+- Limited support for complex inheritance and Solidity 0.8+ features
+- Performance issues with large codebases (>100 contracts)
+- Cross-file references are experimental
+
+## Troubleshooting
+
+**Extension not activating?**
+
+- Ensure you have `.sol` files in your workspace
+- Check Output panel → "Traverse LSP" for errors
+
+**No diagrams generated?**
+
+- Verify Solidity syntax is valid
+- Check `traverse-output/` folder in workspace
+
+**Server crashes?**
+
+- Run `Traverse: Restart Language Server` from command palette
+
+## Feedback
+
+Report issues: https://github.com/calltrace/traverse-lsp/issues
+Include: VS Code version, extension version, sample code, error messages
