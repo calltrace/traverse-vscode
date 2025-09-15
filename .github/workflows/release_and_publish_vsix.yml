@@ -25,7 +25,7 @@ jobs:
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
       - name: Install dependencies
-        run: npm ci
+        run: npm install
 
       - name: Package VSIX
         run: npx vsce package
