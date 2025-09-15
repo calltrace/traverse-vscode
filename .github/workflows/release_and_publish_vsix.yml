@@ -52,7 +52,7 @@ jobs:
           body: |
             # Traverse VSCode Extension v${{ steps.get_version.outputs.version }}
             
-            ## 📦 Installation
+            ## Installation
             
             ### From VS Code Marketplace
             Install directly from the [VS Code Marketplace](https://marketplace.visualstudio.com/items?itemName=GianlucaBrigandi.traverse-vscode)
@@ -63,10 +63,7 @@ jobs:
             code --install-extension traverse-vscode-${{ steps.get_version.outputs.version }}.vsix
             ```
             
-            ## 🚀 What's New
-            - [Add release notes here]
-            
-            ## 📝 Notes
+            ## Notes
             This is a preview release. Features may change and bugs are expected.
           files: "${{ steps.find_vsix.outputs.vsix_file }}"
         env:
