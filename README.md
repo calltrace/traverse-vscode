@@ -1,7 +1,7 @@
 # Traverse VSCode Extension (Preview)
 
 ![Preview](https://img.shields.io/badge/Status-Preview-orange)
-![Version](https://img.shields.io/badge/Version-0.1.1-blue)
+![Version](https://img.shields.io/badge/Version-0.1.2-blue)
 
 > **PREVIEW RELEASE**: This extension is in active development and experimental. Features may change, and bugs are expected. Please report issues to help us improve!
 
@@ -14,7 +14,7 @@ Install directly from the [VS Code Marketplace](https://marketplace.visualstudio
 
 ### From VSIX
 ```bash
-code --install-extension traverse-vscode-0.1.1.vsix
+code --install-extension traverse-vscode-0.1.2.vsix
 ```
 
 ### First Run Setup
