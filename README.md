@@ -90,5 +90,5 @@ Maps all storage variables and their access patterns across functions.
 
 ## Feedback
 
-Report issues: https://github.com/calltrace/traverse-lsp/issues
+Report issues: https://github.com/calltrace/traverse-vscode/issues
 Include: VS Code version, extension version, sample code, error messages

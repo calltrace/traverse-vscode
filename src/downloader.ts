@@ -62,7 +62,6 @@ export class Downloader {
                     const downloadPath = this.getDownloadPath();
                     await this.ensureDirectoryExists(path.dirname(downloadPath));
                     
-                    const fs = require('fs');
                     fs.copyFileSync(fileUri[0].fsPath, downloadPath);
                     await this.makeExecutable(downloadPath);
                     
