@@ -33,14 +33,17 @@ You can also manually download the server using:
 
 1. Open a Solidity project
 2. Right-click any folder → Select "Traverse" commands
-3. Diagrams are saved to `traverse-output/` in your workspace
+3. The extension automatically finds your project root and analyzes all contracts
+4. Results are saved to `traverse-output/` in your project root
+
+**Note:** Commands always analyze the entire project from the root, regardless of which folder you right-click. The extension automatically detects your project root by looking for common configuration files (foundry.toml, hardhat.config.js, package.json, etc.).
 
 **Available Commands** (Cmd+Shift+P):
 
 - `Generate Call Graph` - Visualize function relationships
 - `Generate Sequence Diagram` - Show execution flow
-- `Analyze Storage` - Map storage variables
-- `Generate All Diagrams` - Everything at once
+- `Generate Storage Analysis` - Map storage variables and access patterns
+- `Generate All Analyses` - Run all analyses at once
 
 ## Security Notice
 
@@ -64,7 +67,7 @@ Creates Mermaid sequence diagrams for contract interactions.
 
 ### Storage Analysis
 
-Maps all storage variables and their access patterns across functions.
+Generates a detailed Markdown report of all storage variables and their access patterns across functions.
 
 ## Known Limitations (Preview)
 

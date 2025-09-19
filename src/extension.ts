@@ -48,11 +48,13 @@ async function startLanguageServer(context: vscode.ExtensionContext, serverPath:
     outputChannel.show(true);
     
     // Server options - run the binary
+    const workspaceFolder = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
     const serverOptions: ServerOptions = {
         run: {
             command: serverPath,
             transport: TransportKind.stdio,
             options: {
+                cwd: workspaceFolder,  // Set working directory to workspace root
                 env: {
                     ...process.env,
                     RUST_LOG: 'info',
@@ -64,6 +66,7 @@ async function startLanguageServer(context: vscode.ExtensionContext, serverPath:
             command: serverPath,
             transport: TransportKind.stdio,
             options: {
+                cwd: workspaceFolder,  // Set working directory to workspace root
                 env: {
                     ...process.env,
                     RUST_LOG: 'debug',
@@ -201,6 +204,24 @@ async function initializeServer(context: vscode.ExtensionContext) {
 }
 
 /**
+ * Finds the project root by looking for common project markers
+ * @param startPath The path to start searching from
+ * @returns The project root path
+ */
+function findProjectRoot(startPath: string | undefined): string {
+    // For now, always use the workspace root since sol2cg works from there
+    const workspaceRoot = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
+    
+    if (!workspaceRoot) {
+        outputChannel.appendLine('No workspace folder found');
+        return startPath || '';
+    }
+    
+    outputChannel.appendLine(`Using workspace root as project root: ${workspaceRoot}`);
+    return workspaceRoot;
+}
+
+/**
  * Ensures the LSP client is initialized, prompting for download if needed
  * @returns true if client is ready, false otherwise
  */
@@ -250,10 +271,10 @@ async function ensureLSPClient(context: vscode.ExtensionContext): Promise<boolea
 
 function registerCommands(context: vscode.ExtensionContext) {
     // Workspace-level commands
-    const generateCallGraphWorkspace = vscode.commands.registerCommand(
-        'traverse.generateCallGraph.workspace',
+    const generateCallGraph = vscode.commands.registerCommand(
+        'traverse.generateCallGraph',
         async (uri?: vscode.Uri) => {
-            outputChannel.appendLine('Command: Generate Call Graph (Workspace)');
+            outputChannel.appendLine('Command: Generate Call Graph');
             outputChannel.show(true);
             
             // Ensure LSP client is available
@@ -262,31 +283,33 @@ function registerCommands(context: vscode.ExtensionContext) {
                 return;
             }
             
-            const workspaceFolder = uri?.fsPath || vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
-            if (!workspaceFolder) {
-                const msg = 'No workspace folder found';
+            const clickedPath = uri?.fsPath || vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
+            const projectRoot = findProjectRoot(clickedPath);
+            if (!projectRoot) {
+                const msg = 'No project root found';
                 outputChannel.appendLine(`Error: ${msg}`);
                 vscode.window.showErrorMessage(msg);
                 return;
             }
             
-            outputChannel.appendLine(`Workspace folder: ${workspaceFolder}`);
+            outputChannel.appendLine(`Project root: ${projectRoot}`);
             
             try {
                 const result = await vscode.window.withProgress({
                     location: vscode.ProgressLocation.Notification,
-                    title: "Generating workspace call graph...",
+                    title: "Generating call graph...",
                     cancellable: false
                 }, async () => {
-                    outputChannel.appendLine('Sending request to LSP server...');
-                    return await client!.sendRequest('workspace/executeCommand', {
+                    const requestPayload = {
                         command: 'traverse.generateCallGraph.workspace',
-                        arguments: [{ workspace_folder: workspaceFolder }]
-                    });
+                        arguments: [{ workspace_folder: projectRoot }]
+                    };
+                    outputChannel.appendLine(`Sending request to LSP server with payload: ${JSON.stringify(requestPayload, null, 2)}`);
+                    return await client!.sendRequest('workspace/executeCommand', requestPayload);
                 });
                 
                 outputChannel.appendLine('Received response from server');
-                handleDiagramResult(result, 'Workspace Call Graph');
+                handleDiagramResult(result, 'Call Graph');
             } catch (error: any) {
                 outputChannel.appendLine(`Error: ${error.message}`);
                 vscode.window.showErrorMessage(`Failed to generate call graph: ${error.message}`);
@@ -294,10 +317,10 @@ function registerCommands(context: vscode.ExtensionContext) {
         }
     );
     
-    const generateSequenceDiagramWorkspace = vscode.commands.registerCommand(
-        'traverse.generateSequenceDiagram.workspace',
+    const generateSequenceDiagram = vscode.commands.registerCommand(
+        'traverse.generateSequenceDiagram',
         async (uri?: vscode.Uri) => {
-            outputChannel.appendLine('Command: Generate Sequence Diagram (Workspace)');
+            outputChannel.appendLine('Command: Generate Sequence Diagram');
             outputChannel.show(true);
             
             // Ensure LSP client is available
@@ -306,31 +329,32 @@ function registerCommands(context: vscode.ExtensionContext) {
                 return;
             }
             
-            const workspaceFolder = uri?.fsPath || vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
-            if (!workspaceFolder) {
-                const msg = 'No workspace folder found';
+            const clickedPath = uri?.fsPath || vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
+            const projectRoot = findProjectRoot(clickedPath);
+            if (!projectRoot) {
+                const msg = 'No project root found';
                 outputChannel.appendLine(`Error: ${msg}`);
                 vscode.window.showErrorMessage(msg);
                 return;
             }
             
-            outputChannel.appendLine(`Workspace folder: ${workspaceFolder}`);
+            outputChannel.appendLine(`Project root: ${projectRoot}`);
             
             try {
                 const result = await vscode.window.withProgress({
                     location: vscode.ProgressLocation.Notification,
-                    title: "Generating workspace sequence diagram...",
+                    title: "Generating sequence diagram...",
                     cancellable: false
                 }, async () => {
                     outputChannel.appendLine('Sending request to LSP server...');
                     return await client!.sendRequest('workspace/executeCommand', {
                         command: 'traverse.generateSequenceDiagram.workspace',
-                        arguments: [{ workspace_folder: workspaceFolder }]
+                        arguments: [{ workspace_folder: projectRoot }]
                     });
                 });
                 
                 outputChannel.appendLine('Received response from server');
-                handleDiagramResult(result, 'Workspace Sequence Diagram');
+                handleDiagramResult(result, 'Sequence Diagram');
             } catch (error: any) {
                 outputChannel.appendLine(`Error: ${error.message}`);
                 vscode.window.showErrorMessage(`Failed to generate sequence diagram: ${error.message}`);
@@ -338,10 +362,10 @@ function registerCommands(context: vscode.ExtensionContext) {
         }
     );
     
-    const generateAllWorkspace = vscode.commands.registerCommand(
-        'traverse.generateAll.workspace',
+    const generateAllAnalyses = vscode.commands.registerCommand(
+        'traverse.generateAllAnalyses',
         async (uri?: vscode.Uri) => {
-            outputChannel.appendLine('Command: Generate All Diagrams (Workspace)');
+            outputChannel.appendLine('Command: Generate All Analyses');
             outputChannel.show(true);
             
             // Ensure LSP client is available
@@ -350,42 +374,85 @@ function registerCommands(context: vscode.ExtensionContext) {
                 return;
             }
             
-            const workspaceFolder = uri?.fsPath || vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
-            if (!workspaceFolder) {
-                const msg = 'No workspace folder found';
+            const clickedPath = uri?.fsPath || vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
+            const projectRoot = findProjectRoot(clickedPath);
+            if (!projectRoot) {
+                const msg = 'No project root found';
                 outputChannel.appendLine(`Error: ${msg}`);
                 vscode.window.showErrorMessage(msg);
                 return;
             }
             
-            outputChannel.appendLine(`Workspace folder: ${workspaceFolder}`);
+            outputChannel.appendLine(`Project root: ${projectRoot}`);
             
             try {
-                const result = await vscode.window.withProgress({
+                await vscode.window.withProgress({
                     location: vscode.ProgressLocation.Notification,
-                    title: "Generating all workspace diagrams...",
+                    title: "Generating all analyses...",
                     cancellable: false
-                }, async () => {
-                    outputChannel.appendLine('Sending request to LSP server...');
-                    return await client!.sendRequest('workspace/executeCommand', {
-                        command: 'traverse.generateAll.workspace',
-                        arguments: [{ workspace_folder: workspaceFolder }]
-                    });
+                }, async (progress) => {
+                    // Generate Call Graph
+                    progress.report({ message: "Generating call graph..." });
+                    outputChannel.appendLine('Generating call graph...');
+                    try {
+                        const callGraphResult = await client!.sendRequest('workspace/executeCommand', {
+                            command: 'traverse.generateCallGraph.workspace',
+                            arguments: [{ workspace_folder: projectRoot }]
+                        });
+                        handleDiagramResult(callGraphResult, 'Call Graph');
+                    } catch (error: any) {
+                        outputChannel.appendLine(`Call graph error: ${error.message}`);
+                    }
+                    
+                    // Generate Sequence Diagram
+                    progress.report({ message: "Generating sequence diagram..." });
+                    outputChannel.appendLine('Generating sequence diagram...');
+                    try {
+                        const sequenceResult = await client!.sendRequest('workspace/executeCommand', {
+                            command: 'traverse.generateSequenceDiagram.workspace',
+                            arguments: [{ workspace_folder: projectRoot }]
+                        });
+                        handleDiagramResult(sequenceResult, 'Sequence Diagram');
+                    } catch (error: any) {
+                        outputChannel.appendLine(`Sequence diagram error: ${error.message}`);
+                    }
+                    
+                    // Generate Storage Analysis
+                    progress.report({ message: "Generating storage analysis..." });
+                    outputChannel.appendLine('Generating storage analysis...');
+                    try {
+                        const storageResult = await client!.sendRequest('workspace/executeCommand', {
+                            command: 'traverse.analyzeStorage.workspace',
+                            arguments: [{ workspace_folder: projectRoot }]
+                        });
+                        handleDiagramResult(storageResult, 'Storage Analysis');
+                    } catch (error: any) {
+                        outputChannel.appendLine(`Storage analysis error: ${error.message}`);
+                    }
                 });
                 
-                outputChannel.appendLine('Received response from server');
-                handleDiagramResult(result, 'All Workspace Diagrams');
+                outputChannel.appendLine('All analyses generation completed');
+                
+                // Show success message with option to open output folder
+                const outputDir = path.join(projectRoot, 'traverse-output');
+                const selection = await vscode.window.showInformationMessage(
+                    'All analyses generated successfully',
+                    'Open Output Folder'
+                );
+                if (selection === 'Open Output Folder') {
+                    vscode.commands.executeCommand('revealInExplorer', vscode.Uri.file(outputDir));
+                }
             } catch (error: any) {
                 outputChannel.appendLine(`Error: ${error.message}`);
-                vscode.window.showErrorMessage(`Failed to generate all diagrams: ${error.message}`);
+                vscode.window.showErrorMessage(`Failed to generate all analyses: ${error.message}`);
             }
         }
     );
     
-    const analyzeStorageWorkspace = vscode.commands.registerCommand(
-        'traverse.analyzeStorage.workspace',
+    const generateStorageAnalysis = vscode.commands.registerCommand(
+        'traverse.generateStorageAnalysis',
         async (uri?: vscode.Uri) => {
-            outputChannel.appendLine('Command: Analyze Storage (Workspace)');
+            outputChannel.appendLine('Command: Generate Storage Analysis');
             outputChannel.show(true);
             
             // Ensure LSP client is available
@@ -394,31 +461,32 @@ function registerCommands(context: vscode.ExtensionContext) {
                 return;
             }
             
-            const workspaceFolder = uri?.fsPath || vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
-            if (!workspaceFolder) {
-                const msg = 'No workspace folder found';
+            const clickedPath = uri?.fsPath || vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
+            const projectRoot = findProjectRoot(clickedPath);
+            if (!projectRoot) {
+                const msg = 'No project root found';
                 outputChannel.appendLine(`Error: ${msg}`);
                 vscode.window.showErrorMessage(msg);
                 return;
             }
             
-            outputChannel.appendLine(`Workspace folder: ${workspaceFolder}`);
+            outputChannel.appendLine(`Project root: ${projectRoot}`);
             
             try {
                 const result = await vscode.window.withProgress({
                     location: vscode.ProgressLocation.Notification,
-                    title: "Analyzing workspace storage...",
+                    title: "Generating storage analysis...",
                     cancellable: false
                 }, async () => {
                     outputChannel.appendLine('Sending request to LSP server...');
                     return await client!.sendRequest('workspace/executeCommand', {
                         command: 'traverse.analyzeStorage.workspace',
-                        arguments: [{ workspace_folder: workspaceFolder }]
+                        arguments: [{ workspace_folder: projectRoot }]
                     });
                 });
                 
                 outputChannel.appendLine('Received response from server');
-                handleDiagramResult(result, 'Workspace Storage Analysis');
+                handleDiagramResult(result, 'Storage Analysis');
             } catch (error: any) {
                 outputChannel.appendLine(`Error: ${error.message}`);
                 vscode.window.showErrorMessage(`Failed to analyze storage: ${error.message}`);
@@ -485,10 +553,10 @@ function registerCommands(context: vscode.ExtensionContext) {
     );
     
     context.subscriptions.push(
-        generateCallGraphWorkspace,
-        generateSequenceDiagramWorkspace,
-        generateAllWorkspace,
-        analyzeStorageWorkspace,
+        generateCallGraph,
+        generateSequenceDiagram,
+        generateStorageAnalysis,
+        generateAllAnalyses,
         restartCommand,
         downloadServerCommand
     );

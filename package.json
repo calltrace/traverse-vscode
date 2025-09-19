@@ -84,23 +84,23 @@
     },
     "commands": [
       {
-        "command": "traverse.generateCallGraph.workspace",
-        "title": "Generate Call Graph (Workspace)",
+        "command": "traverse.generateCallGraph",
+        "title": "Generate Call Graph",
         "category": "Traverse"
       },
       {
-        "command": "traverse.generateSequenceDiagram.workspace",
-        "title": "Generate Sequence Diagram (Workspace)",
+        "command": "traverse.generateSequenceDiagram",
+        "title": "Generate Sequence Diagram",
         "category": "Traverse"
       },
       {
-        "command": "traverse.generateAll.workspace",
-        "title": "Generate All Diagrams (Workspace)",
+        "command": "traverse.generateStorageAnalysis",
+        "title": "Generate Storage Analysis",
         "category": "Traverse"
       },
       {
-        "command": "traverse.analyzeStorage.workspace",
-        "title": "Analyze Storage (Workspace)",
+        "command": "traverse.generateAllAnalyses",
+        "title": "Generate All Analyses",
         "category": "Traverse"
       },
       {
@@ -118,37 +118,37 @@
       "explorer/context": [
         {
           "when": "explorerResourceIsFolder",
-          "command": "traverse.generateCallGraph.workspace",
+          "command": "traverse.generateCallGraph",
           "group": "traverse@1"
         },
         {
           "when": "explorerResourceIsFolder",
-          "command": "traverse.generateSequenceDiagram.workspace",
+          "command": "traverse.generateSequenceDiagram",
           "group": "traverse@2"
         },
         {
           "when": "explorerResourceIsFolder",
-          "command": "traverse.generateAll.workspace",
+          "command": "traverse.generateStorageAnalysis",
           "group": "traverse@3"
         },
         {
           "when": "explorerResourceIsFolder",
-          "command": "traverse.analyzeStorage.workspace",
+          "command": "traverse.generateAllAnalyses",
           "group": "traverse@4"
         }
       ],
       "commandPalette": [
         {
-          "command": "traverse.generateCallGraph.workspace"
+          "command": "traverse.generateCallGraph"
         },
         {
-          "command": "traverse.generateSequenceDiagram.workspace"
+          "command": "traverse.generateSequenceDiagram"
         },
         {
-          "command": "traverse.generateAll.workspace"
+          "command": "traverse.generateStorageAnalysis"
         },
         {
-          "command": "traverse.analyzeStorage.workspace"
+          "command": "traverse.generateAllAnalyses"
         },
         {
           "command": "traverse.restart"
