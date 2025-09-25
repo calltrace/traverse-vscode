@@ -3,6 +3,8 @@
 ![Preview](https://img.shields.io/badge/Status-Preview-orange)
 ![Version](https://img.shields.io/badge/Version-0.1.4-blue)
 
+![Traverse Demo](media/traverse-demo.gif)
+
 > **PREVIEW RELEASE**: This extension is in active development and experimental. Features may change, and bugs are expected. Please report issues to help us improve!
 
 This is the Visual Studio Code extension for Traverse, which provides Solidity smart contract visualization with automatic call graph and sequence diagram generation. The extension uses the Traverse Rust LSP server to analyze and visualize your Solidity code.
