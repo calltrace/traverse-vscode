@@ -16,7 +16,7 @@ Install directly from the [VS Code Marketplace](https://marketplace.visualstudio
 
 ### From VSIX
 ```bash
-code --install-extension traverse-vscode-0.1.4.vsix
+code --install-extension traverse-vscode-0.1.6.vsix
 ```
 
 ### First Run Setup
