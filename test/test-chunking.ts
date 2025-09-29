@@ -37,7 +37,7 @@ function testChunkingImplementation(): boolean {
     
     try {
         // Read the compiled extension.js to verify chunking is implemented
-        const extensionPath = path.join(__dirname, '..', 'extension.js');
+        const extensionPath = path.join(__dirname, '..', '..', 'extension.js');
         if (fs.existsSync(extensionPath)) {
             const extensionContent = fs.readFileSync(extensionPath, 'utf8');
             
@@ -73,7 +73,7 @@ function testChunkingImplementation(): boolean {
         }
         
         // Read the source TypeScript file for more detailed checks
-        const srcPath = path.join(__dirname, '..', 'src', 'extension.ts');
+        const srcPath = path.join(__dirname, '..', '..', 'src', 'extension.ts');
         if (fs.existsSync(srcPath)) {
             const srcContent = fs.readFileSync(srcPath, 'utf8');
             
