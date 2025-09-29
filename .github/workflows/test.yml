@@ -49,7 +49,7 @@ jobs:
     - name: Set test result
       id: test-result
       run: |
-        if [ "${{ steps.run-tests.outcome }}" == "success" ]; then
+        if [[ "${{ steps.run-tests.outcome }}" == "success" ]]; then
           echo "passed=true" >> $GITHUB_OUTPUT
         else
           echo "passed=false" >> $GITHUB_OUTPUT
