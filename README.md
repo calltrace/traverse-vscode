@@ -1,8 +1,8 @@
 # Traverse VSCode Extension (Preview)
 
-![Tests](https://github.com/calltrace/traverse-vscode/actions/workflows/test.yml/badge.svg)
-![Latest Release](https://img.shields.io/github/v/release/calltrace/traverse-vscode)
-![Version](https://img.shields.io/visual-studio-marketplace/v/GianlucaBrigandi.traverse-vscode)
+[![Tests](https://github.com/calltrace/traverse-vscode/actions/workflows/test.yml/badge.svg)](https://github.com/calltrace/traverse-vscode/actions/workflows/test.yml)
+[![Latest Release](https://img.shields.io/github/v/release/calltrace/traverse-vscode)](https://github.com/calltrace/traverse-vscode/releases)
+[![Version](https://img.shields.io/github/package-json/v/calltrace/traverse-vscode)](https://github.com/calltrace/traverse-vscode)
 ![Preview](https://img.shields.io/badge/Status-Preview-orange)
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
