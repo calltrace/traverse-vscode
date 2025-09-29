@@ -2,7 +2,7 @@
   "name": "traverse-vscode",
   "displayName": "Traverse Solidity Analyzer",
   "description": "PREVIEW: Solidity code analysis and visualization powered by Traverse - Experimental features, expect changes",
-  "version": "0.1.5",
+  "version": "0.1.4",
   "publisher": "GianlucaBrigandi",
   "repository": {
     "type": "git",

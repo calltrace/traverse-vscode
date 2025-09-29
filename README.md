@@ -2,7 +2,6 @@
 
 [![Tests](https://github.com/calltrace/traverse-vscode/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/calltrace/traverse-vscode/actions/workflows/test.yml)
 [![Latest Release](https://img.shields.io/github/release/calltrace/traverse-vscode.svg)](https://github.com/calltrace/traverse-vscode/releases/latest)
-[![Version](https://img.shields.io/github/package-json/v/calltrace/traverse-vscode)](https://github.com/calltrace/traverse-vscode)
 ![Preview](https://img.shields.io/badge/Status-Preview-orange)
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
@@ -17,7 +16,7 @@ Install directly from the [VS Code Marketplace](https://marketplace.visualstudio
 
 ### From VSIX
 ```bash
-code --install-extension traverse-vscode-0.1.5.vsix
+code --install-extension traverse-vscode-0.1.4.vsix
 ```
 
 ### First Run Setup
