@@ -5,14 +5,21 @@
         "outDir": "out",
         "lib": ["ES2020"],
         "sourceMap": true,
-        "rootDir": "src",
+        "rootDir": "./",
         "strict": true,
         "esModuleInterop": true,
         "skipLibCheck": true,
         "forceConsistentCasingInFileNames": true
     },
+    "include": [
+        "src/**/*",
+        "test/**/*"
+    ],
     "exclude": [
         "node_modules",
         ".vscode-test",
+        "out",
+        "dist",
+        "**/*.spec.ts"
     ]
 }

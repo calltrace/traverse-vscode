@@ -15,9 +15,6 @@ import { CONSTANTS } from './constants';
 let client: LanguageClient | undefined;
 let outputChannel: vscode.OutputChannel;
 
-/**
- * Gets the path to the server binary using the binary finder
- */
 async function getServerPath(context: vscode.ExtensionContext): Promise<string | undefined> {
     outputChannel.appendLine('Looking for Traverse LSP server binary...');
     const finder = new BinaryFinder(context);
@@ -25,9 +22,8 @@ async function getServerPath(context: vscode.ExtensionContext): Promise<string |
     
     if (location) {
         outputChannel.appendLine(`Found binary from ${location.source}: ${location.path}`);
-        outputChannel.show(true); // Show output panel
+        outputChannel.show(true);
         
-        // Ensure it's executable on Unix systems
         if (os.platform() !== 'win32' && location.source !== 'settings') {
             try {
                 fs.chmodSync(location.path, 0o755);
@@ -47,14 +43,13 @@ async function startLanguageServer(context: vscode.ExtensionContext, serverPath:
     outputChannel.appendLine(`Starting Traverse LSP server from: ${serverPath}`);
     outputChannel.show(true);
     
-    // Server options - run the binary
     const workspaceFolder = vscode.workspace.workspaceFolders?.[0]?.uri.fsPath;
     const serverOptions: ServerOptions = {
         run: {
             command: serverPath,
             transport: TransportKind.stdio,
             options: {
-                cwd: workspaceFolder,  // Set working directory to workspace root
+                cwd: workspaceFolder,
                 env: {
                     ...process.env,
                     RUST_LOG: 'info',
@@ -66,7 +61,7 @@ async function startLanguageServer(context: vscode.ExtensionContext, serverPath:
             command: serverPath,
             transport: TransportKind.stdio,
             options: {
-                cwd: workspaceFolder,  // Set working directory to workspace root
+                cwd: workspaceFolder,
                 env: {
                     ...process.env,
                     RUST_LOG: 'debug',
@@ -86,7 +81,6 @@ async function startLanguageServer(context: vscode.ExtensionContext, serverPath:
         traceOutputChannel: outputChannel
     };
     
-    // Create and start the language client
     client = new LanguageClient(
         'traverse-lsp',
         'Traverse Solidity Language Server',
@@ -95,7 +89,6 @@ async function startLanguageServer(context: vscode.ExtensionContext, serverPath:
     );
     
     try {
-        // Start the client
         await client.start();
         outputChannel.appendLine('✅ Traverse LSP server started successfully');
     } catch (error) {
@@ -106,22 +99,16 @@ async function startLanguageServer(context: vscode.ExtensionContext, serverPath:
 
 export async function activate(context: vscode.ExtensionContext) {
     try {
-        // Immediate console log to verify activation
-        console.log('TRAVERSE EXTENSION: Activation started!');
         
-        // Create output channel first
         outputChannel = vscode.window.createOutputChannel('Traverse LSP');
         outputChannel.appendLine('=== Traverse LSP Extension Activating ===');
         outputChannel.appendLine(`Time: ${new Date().toISOString()}`);
         outputChannel.appendLine(`Extension path: ${context.extensionPath}`);
         outputChannel.appendLine(`VS Code version: ${vscode.version}`);
         outputChannel.appendLine(`Platform: ${CONSTANTS.platformIdentifier}`);
-        outputChannel.show(true); // Show the output panel
+        outputChannel.show(true);
         
-        // Also show an information message to confirm activation
-        vscode.window.showInformationMessage('Traverse Solidity Tools extension is activating...');
         
-        // ALWAYS register commands - they should work even without server
         outputChannel.appendLine('Registering commands...');
         try {
             registerCommands(context);
@@ -131,16 +118,13 @@ export async function activate(context: vscode.ExtensionContext) {
             console.error('Failed to register commands:', error);
         }
         
-        // Check if platform is supported - but don't return early
         if (!CONSTANTS.isCurrentPlatformSupported()) {
             const msg = `Platform ${CONSTANTS.platformIdentifier} is not supported by Traverse LSP`;
             outputChannel.appendLine(`WARNING: ${msg}`);
             vscode.window.showWarningMessage(msg);
-            // Don't return - commands should still work
         } else {
             outputChannel.appendLine('Platform is supported, initializing server...');
             
-            // Try to find and start the server (non-blocking)
             initializeServer(context).catch(error => {
                 outputChannel.appendLine(`Server initialization failed: ${error}`);
             });
@@ -300,9 +284,13 @@ function registerCommands(context: vscode.ExtensionContext) {
                     title: "Generating call graph...",
                     cancellable: false
                 }, async () => {
+                    const enableChunking = vscode.workspace.getConfiguration('traverse-lsp').get<boolean>('enableChunking', false);
                     const requestPayload = {
                         command: 'traverse.generateCallGraph.workspace',
-                        arguments: [{ workspace_folder: projectRoot }]
+                        arguments: [{ 
+                            workspace_folder: projectRoot,
+                            chunking: enableChunking
+                        }]
                     };
                     outputChannel.appendLine(`Sending request to LSP server with payload: ${JSON.stringify(requestPayload, null, 2)}`);
                     return await client!.sendRequest('workspace/executeCommand', requestPayload);
@@ -347,9 +335,13 @@ function registerCommands(context: vscode.ExtensionContext) {
                     cancellable: false
                 }, async () => {
                     outputChannel.appendLine('Sending request to LSP server...');
+                    const enableChunking = vscode.workspace.getConfiguration('traverse-lsp').get<boolean>('enableChunking', false);
                     return await client!.sendRequest('workspace/executeCommand', {
                         command: 'traverse.generateSequenceDiagram.workspace',
-                        arguments: [{ workspace_folder: projectRoot }]
+                        arguments: [{ 
+                            workspace_folder: projectRoot,
+                            chunking: enableChunking
+                        }]
                     });
                 });
                 
@@ -395,9 +387,13 @@ function registerCommands(context: vscode.ExtensionContext) {
                     progress.report({ message: "Generating call graph..." });
                     outputChannel.appendLine('Generating call graph...');
                     try {
+                        const enableChunking = vscode.workspace.getConfiguration('traverse-lsp').get<boolean>('enableChunking', false);
                         const callGraphResult = await client!.sendRequest('workspace/executeCommand', {
                             command: 'traverse.generateCallGraph.workspace',
-                            arguments: [{ workspace_folder: projectRoot }]
+                            arguments: [{ 
+                                workspace_folder: projectRoot,
+                                chunking: enableChunking
+                            }]
                         });
                         handleDiagramResult(callGraphResult, 'Call Graph');
                     } catch (error: any) {
@@ -408,9 +404,13 @@ function registerCommands(context: vscode.ExtensionContext) {
                     progress.report({ message: "Generating sequence diagram..." });
                     outputChannel.appendLine('Generating sequence diagram...');
                     try {
+                        const enableChunking = vscode.workspace.getConfiguration('traverse-lsp').get<boolean>('enableChunking', false);
                         const sequenceResult = await client!.sendRequest('workspace/executeCommand', {
                             command: 'traverse.generateSequenceDiagram.workspace',
-                            arguments: [{ workspace_folder: projectRoot }]
+                            arguments: [{ 
+                                workspace_folder: projectRoot,
+                                chunking: enableChunking
+                            }]
                         });
                         handleDiagramResult(sequenceResult, 'Sequence Diagram');
                     } catch (error: any) {
@@ -421,9 +421,13 @@ function registerCommands(context: vscode.ExtensionContext) {
                     progress.report({ message: "Generating storage analysis..." });
                     outputChannel.appendLine('Generating storage analysis...');
                     try {
+                        const enableChunking = vscode.workspace.getConfiguration('traverse-lsp').get<boolean>('enableChunking', false);
                         const storageResult = await client!.sendRequest('workspace/executeCommand', {
                             command: 'traverse.analyzeStorage.workspace',
-                            arguments: [{ workspace_folder: projectRoot }]
+                            arguments: [{ 
+                                workspace_folder: projectRoot,
+                                chunking: enableChunking
+                            }]
                         });
                         handleDiagramResult(storageResult, 'Storage Analysis');
                     } catch (error: any) {
@@ -479,9 +483,13 @@ function registerCommands(context: vscode.ExtensionContext) {
                     cancellable: false
                 }, async () => {
                     outputChannel.appendLine('Sending request to LSP server...');
+                    const enableChunking = vscode.workspace.getConfiguration('traverse-lsp').get<boolean>('enableChunking', false);
                     return await client!.sendRequest('workspace/executeCommand', {
                         command: 'traverse.analyzeStorage.workspace',
-                        arguments: [{ workspace_folder: projectRoot }]
+                        arguments: [{ 
+                            workspace_folder: projectRoot,
+                            chunking: enableChunking
+                        }]
                     });
                 });
                 
@@ -552,13 +560,29 @@ function registerCommands(context: vscode.ExtensionContext) {
         }
     );
     
+    const toggleChunkingCommand = vscode.commands.registerCommand(
+        'traverse.toggleChunking',
+        async () => {
+            const config = vscode.workspace.getConfiguration('traverse-lsp');
+            const currentValue = config.get<boolean>('enableChunking', false);
+            const newValue = !currentValue;
+            
+            await config.update('enableChunking', newValue, vscode.ConfigurationTarget.Workspace);
+            
+            const status = newValue ? 'enabled' : 'disabled';
+            outputChannel.appendLine(`Chunking ${status}`);
+            vscode.window.showInformationMessage(`Traverse: Chunking ${status}`);
+        }
+    );
+    
     context.subscriptions.push(
         generateCallGraph,
         generateSequenceDiagram,
         generateStorageAnalysis,
         generateAllAnalyses,
         restartCommand,
-        downloadServerCommand
+        downloadServerCommand,
+        toggleChunkingCommand
     );
 }
 

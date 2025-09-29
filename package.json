@@ -2,7 +2,7 @@
   "name": "traverse-vscode",
   "displayName": "Traverse Solidity Analyzer",
   "description": "PREVIEW: Solidity code analysis and visualization powered by Traverse - Experimental features, expect changes",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "publisher": "GianlucaBrigandi",
   "repository": {
     "type": "git",
@@ -79,6 +79,12 @@
           "type": "number",
           "default": 100,
           "description": "Controls the maximum number of problems produced by the server"
+        },
+        "traverse-lsp.enableChunking": {
+          "scope": "resource",
+          "type": "boolean",
+          "default": false,
+          "description": "Enable chunking of large analysis outputs to handle big codebases more efficiently"
         }
       }
     },
@@ -111,6 +117,11 @@
       {
         "command": "traverse.downloadServer",
         "title": "Download Language Server",
+        "category": "Traverse"
+      },
+      {
+        "command": "traverse.toggleChunking",
+        "title": "Toggle Chunking",
         "category": "Traverse"
       }
     ],
@@ -155,6 +166,9 @@
         },
         {
           "command": "traverse.downloadServer"
+        },
+        {
+          "command": "traverse.toggleChunking"
         }
       ]
     }
@@ -165,14 +179,26 @@
     "watch": "tsc -watch -p ./",
     "package": "webpack --mode production",
     "webpack": "webpack --mode development",
-    "webpack-dev": "webpack --mode development --watch"
+    "webpack-dev": "webpack --mode development --watch",
+    "test": "npm run test:integration && npm run test:chunking && npm run test:lsp",
+    "test:integration": "node ./out/test/run-integration-tests.js",
+    "test:chunking": "node ./out/test/test-chunking.js",
+    "test:lsp": "node ./out/test/mock-lsp-server.js",
+    "test:vscode": "node ./out/test/runTest.js",
+    "test:all": "npm run compile && npm run package && npm run test",
+    "pretest": "npm run compile && npm run package"
   },
   "dependencies": {
     "vscode-languageclient": "^9.0.1"
   },
   "devDependencies": {
+    "@types/glob": "^8.1.0",
+    "@types/mocha": "^10.0.1",
     "@types/node": "^20.0.0",
     "@types/vscode": "^1.85.0",
+    "@vscode/test-electron": "^2.3.8",
+    "glob": "^8.1.0",
+    "mocha": "^10.2.0",
     "ts-loader": "^9.5.4",
     "typescript": "^5.0.0",
     "webpack": "^5.101.3",

@@ -1,13 +1,14 @@
 # Traverse VSCode Extension (Preview)
 
+![Tests](https://github.com/calltrace/traverse-vscode/actions/workflows/ci.yml/badge.svg)
+![Release](https://github.com/calltrace/traverse-vscode/actions/workflows/release.yml/badge.svg)
+![VSCode Marketplace](https://img.shields.io/visual-studio-marketplace/v/GianlucaBrigandi.traverse-vscode)
 ![Preview](https://img.shields.io/badge/Status-Preview-orange)
-![Version](https://img.shields.io/badge/Version-0.1.4-blue)
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
 ![Traverse Demo](media/traverse-demo.gif)
 
-> **PREVIEW RELEASE**: This extension is in active development and experimental. Features may change, and bugs are expected. Please report issues to help us improve!
-
-This is the Visual Studio Code extension for Traverse, which provides Solidity smart contract visualization with automatic call graph and sequence diagram generation. The extension uses the Traverse Rust LSP server to analyze and visualize your Solidity code.
+Solidity smart contract visualization with automatic call graph and sequence diagram generation.
 
 ## Install
 
@@ -16,7 +17,7 @@ Install directly from the [VS Code Marketplace](https://marketplace.visualstudio
 
 ### From VSIX
 ```bash
-code --install-extension traverse-vscode-0.1.4.vsix
+code --install-extension traverse-vscode-0.1.5.vsix
 ```
 
 ### First Run Setup
@@ -46,6 +47,7 @@ You can also manually download the server using:
 - `Generate Sequence Diagram` - Show execution flow
 - `Generate Storage Analysis` - Map storage variables and access patterns
 - `Generate All Analyses` - Run all analyses at once
+- `Toggle Chunking` - Enable/disable output chunking for large codebases
 
 ## Security Notice
 
@@ -70,6 +72,15 @@ Creates Mermaid sequence diagrams for contract interactions.
 ### Storage Analysis
 
 Generates a detailed Markdown report of all storage variables and their access patterns across functions.
+
+## Configuration
+
+The extension can be configured through VS Code settings:
+
+- `traverse-lsp.enableChunking` (default: `false`) - Enable chunking of large analysis outputs for better handling of big codebases
+- `traverse-lsp.serverPath` - Custom path to the Traverse LSP server executable
+- `traverse-lsp.trace.server` - Enable server communication tracing for debugging
+- `traverse-lsp.maxNumberOfProblems` - Maximum number of problems to report
 
 ## Known Limitations (Preview)
 

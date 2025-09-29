@@ -1,0 +1,76 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release (e.g., v0.1.6)'
+        required: true
+        type: string
+
+jobs:
+  test:
+    name: Run Tests
+    uses: ./.github/workflows/test.yml
+  
+  release:
+    name: Create Release
+    needs: test
+    if: needs.test.outputs.tests-passed == 'true'
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v4
+    
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        cache: 'npm'
+    
+    - name: Install dependencies
+      run: npm ci
+    
+    - name: Build extension
+      run: |
+        npm run compile
+        npm run package
+    
+    - name: Package VSIX
+      run: |
+        npm install -g @vscode/vsce
+        vsce package --no-dependencies
+    
+    - name: Get version
+      id: version
+      run: |
+        if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+          echo "version=${{ github.event.inputs.version }}" >> $GITHUB_OUTPUT
+        else
+          echo "version=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+        fi
+    
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ steps.version.outputs.version }}
+        name: Release ${{ steps.version.outputs.version }}
+        files: '*.vsix'
+        generate_release_notes: true
+        fail_on_unmatched_files: true
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    
+    - name: Publish to VS Code Marketplace
+      if: success() && contains(github.ref, 'refs/tags/')
+      run: vsce publish -p ${{ secrets.VSCE_TOKEN }}
+      continue-on-error: true
+    
+    - name: Report success
+      if: success()
+      run: |
+        echo "Release ${{ steps.version.outputs.version }} created successfully!"
+        echo "VSIX package uploaded to GitHub release"
+        echo "Extension published to VS Code Marketplace (if token configured)"
