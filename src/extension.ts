@@ -90,9 +90,9 @@ async function startLanguageServer(context: vscode.ExtensionContext, serverPath:
     
     try {
         await client.start();
-        outputChannel.appendLine('✅ Traverse LSP server started successfully');
+        outputChannel.appendLine('Traverse LSP server started successfully');
     } catch (error) {
-        outputChannel.appendLine(`❌ Failed to start LSP server: ${error}`);
+        outputChannel.appendLine(`Failed to start LSP server: ${error}`);
         throw error;
     }
 }
@@ -171,7 +171,7 @@ async function initializeServer(context: vscode.ExtensionContext) {
         }
         
         if (!serverPath) {
-            outputChannel.appendLine('❌ Server binary not found and download cancelled or failed');
+            outputChannel.appendLine('Server binary not found and download cancelled or failed');
             vscode.window.showWarningMessage(
                 'Traverse LSP server is not installed. Use "Traverse: Download Language Server" command to install it.'
             );
@@ -182,7 +182,7 @@ async function initializeServer(context: vscode.ExtensionContext) {
     try {
         await startLanguageServer(context, serverPath);
     } catch (error) {
-        outputChannel.appendLine(`❌ Failed to start server: ${error}`);
+        outputChannel.appendLine(`Failed to start server: ${error}`);
         vscode.window.showErrorMessage(`Failed to start Traverse LSP server: ${error}`);
     }
 }

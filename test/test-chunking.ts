@@ -43,32 +43,32 @@ function testChunkingImplementation(): boolean {
             
             // Check if chunking configuration is being read
             if (extensionContent.includes('enableChunking')) {
-                log('✓ Extension reads enableChunking configuration', colors.green);
+                log('Extension reads enableChunking configuration', colors.green);
                 testResults.passed.push('Reads enableChunking config');
             } else {
-                log('✗ Extension does not read enableChunking configuration', colors.red);
+                log('Extension does not read enableChunking configuration', colors.red);
                 testResults.failed.push('Reads enableChunking config');
             }
             
             // Check if chunking is passed in requests
             if (extensionContent.includes('chunking:')) {
-                log('✓ Extension passes chunking parameter in requests', colors.green);
+                log('Extension passes chunking parameter in requests', colors.green);
                 testResults.passed.push('Passes chunking parameter');
             } else {
-                log('✗ Extension does not pass chunking parameter', colors.red);
+                log('Extension does not pass chunking parameter', colors.red);
                 testResults.failed.push('Passes chunking parameter');
             }
             
             // Check toggle command implementation
             if (extensionContent.includes('traverse.toggleChunking')) {
-                log('✓ Toggle chunking command is implemented', colors.green);
+                log('Toggle chunking command is implemented', colors.green);
                 testResults.passed.push('Toggle command implemented');
             } else {
-                log('✗ Toggle chunking command not found', colors.red);
+                log('Toggle chunking command not found', colors.red);
                 testResults.failed.push('Toggle command implemented');
             }
         } else {
-            log('✗ Compiled extension.js not found', colors.red);
+            log('Compiled extension.js not found', colors.red);
             testResults.failed.push('Extension compilation');
         }
         
@@ -91,10 +91,10 @@ function testChunkingImplementation(): boolean {
                 const cmdRegex = new RegExp(`${cmd}[\\s\\S]*?enableChunking`, 'g');
                 if (cmdRegex.test(srcContent)) {
                     chunkingCount++;
-                    log(`✓ Command '${cmd}' uses chunking parameter`, colors.green);
+                    log(`Command '${cmd}' uses chunking parameter`, colors.green);
                     testResults.passed.push(`${cmd} uses chunking`);
                 } else {
-                    log(`✗ Command '${cmd}' does not use chunking parameter`, colors.red);
+                    log(`Command '${cmd}' does not use chunking parameter`, colors.red);
                     testResults.failed.push(`${cmd} uses chunking`);
                 }
             }
@@ -109,18 +109,18 @@ function testChunkingImplementation(): boolean {
         
         const chunkingConfig = packageJson.contributes?.configuration?.properties?.['traverse-lsp.enableChunking'];
         if (chunkingConfig) {
-            log('\n✓ Chunking configuration properly defined in package.json:', colors.green);
+            log('\nChunking configuration properly defined in package.json:', colors.green);
             log(`  - Type: ${chunkingConfig.type}`, colors.green);
             log(`  - Default: ${chunkingConfig.default}`, colors.green);
             log(`  - Description: ${chunkingConfig.description}`, colors.green);
             testResults.passed.push('Package.json configuration');
         } else {
-            log('\n✗ Chunking configuration missing in package.json', colors.red);
+            log('\nChunking configuration missing in package.json', colors.red);
             testResults.failed.push('Package.json configuration');
         }
         
     } catch (error: any) {
-        log(`\n✗ Error during testing: ${error.message}`, colors.red);
+        log(`\nError during testing: ${error.message}`, colors.red);
         testResults.failed.push(`Error: ${error.message}`);
     }
     
@@ -130,21 +130,21 @@ function testChunkingImplementation(): boolean {
     log('='.repeat(50), colors.yellow);
     
     if (testResults.passed.length > 0) {
-        log(`\n✓ Passed: ${testResults.passed.length}`, colors.green);
+        log(`\nPassed: ${testResults.passed.length}`, colors.green);
         testResults.passed.forEach(test => {
             log(`  - ${test}`, colors.green);
         });
     }
     
     if (testResults.failed.length > 0) {
-        log(`\n✗ Failed: ${testResults.failed.length}`, colors.red);
+        log(`\nFailed: ${testResults.failed.length}`, colors.red);
         testResults.failed.forEach(test => {
             log(`  - ${test}`, colors.red);
         });
     }
     
     const success = testResults.failed.length === 0;
-    log(`\n${success ? '✓ All chunking tests PASSED' : '✗ Some chunking tests FAILED'}`, 
+    log(`\n${success ? 'All chunking tests PASSED' : 'Some chunking tests FAILED'}`, 
         success ? colors.green : colors.red);
     
     return success;
@@ -183,10 +183,10 @@ function simulateLSPRequest(): boolean {
     const request2 = mockRequests[1];
     
     if (request1.arguments[0].chunking === false && request2.arguments[0].chunking === true) {
-        log('\n✓ Chunking parameter correctly toggles between true/false', colors.green);
+        log('\nChunking parameter correctly toggles between true/false', colors.green);
         return true;
     } else {
-        log('\n✗ Chunking parameter not working correctly', colors.red);
+        log('\nChunking parameter not working correctly', colors.red);
         return false;
     }
 }
@@ -210,10 +210,10 @@ function runTests(): void {
     // Final result
     log('\n' + '='.repeat(50), colors.yellow);
     if (allPassed) {
-        log('✓ ALL TESTS PASSED', colors.green);
+        log('ALL TESTS PASSED', colors.green);
         process.exit(0);
     } else {
-        log('✗ SOME TESTS FAILED', colors.red);
+        log('SOME TESTS FAILED', colors.red);
         process.exit(1);
     }
 }

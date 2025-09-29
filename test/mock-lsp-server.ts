@@ -97,14 +97,14 @@ class MockLSPServer {
             
             if (args && 'chunking' in args) {
                 if (args.chunking === true) {
-                    log('  ✓ Chunking ENABLED', colors.green);
+                    log('  Chunking ENABLED', colors.green);
                     this.chunkingRequests.withChunking.push(command);
                 } else {
-                    log('  ○ Chunking DISABLED', colors.yellow);
+                    log('  Chunking DISABLED', colors.yellow);
                     this.chunkingRequests.withoutChunking.push(command);
                 }
             } else {
-                log('  ✗ No chunking parameter found!', colors.red);
+                log('  No chunking parameter found!', colors.red);
             }
             
             if (command.includes('generateCallGraph')) {
@@ -176,9 +176,9 @@ class MockLSPServer {
         log(`Requests with chunking disabled: ${this.chunkingRequests.withoutChunking.length}`, colors.yellow);
         
         if (this.chunkingRequests.withChunking.length > 0) {
-            log('\n✓ Chunking parameter is being passed correctly!', colors.green);
+            log('\nChunking parameter is being passed correctly!', colors.green);
         } else if (this.receivedRequests.length > 0) {
-            log('\n✗ No requests with chunking parameter received', colors.red);
+            log('\nNo requests with chunking parameter received', colors.red);
         }
     }
 }
@@ -239,10 +239,10 @@ function testLocally(): boolean {
     const hasNonChunkedRequests = server['chunkingRequests'].withoutChunking.length > 0;
     
     if (hasChunkedRequests && hasNonChunkedRequests) {
-        log('\n✓ TEST PASSED: Chunking parameter works correctly!', colors.green);
+        log('\nTEST PASSED: Chunking parameter works correctly!', colors.green);
         return true;
     } else {
-        log('\n✗ TEST FAILED: Chunking parameter not working', colors.red);
+        log('\nTEST FAILED: Chunking parameter not working', colors.red);
         return false;
     }
 }

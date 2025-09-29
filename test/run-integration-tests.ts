@@ -154,20 +154,20 @@ async function testExtensionCommands(): Promise<void> {
         log('\nTesting extension compilation...', colors.blue);
         try {
             await runCommand('npm', ['run', 'compile']);
-            log('✓ Extension compiled successfully', colors.green);
+            log('Extension compiled successfully', colors.green);
             testResults.passed.push('Extension compilation');
         } catch (error: any) {
-            log(`✗ Extension compilation failed: ${error.message}`, colors.red);
+            log(`Extension compilation failed: ${error.message}`, colors.red);
             testResults.failed.push('Extension compilation');
         }
         
         log('\nTesting extension packaging...', colors.blue);
         try {
             await runCommand('npm', ['run', 'package']);
-            log('✓ Extension packaged successfully', colors.green);
+            log('Extension packaged successfully', colors.green);
             testResults.passed.push('Extension packaging');
         } catch (error: any) {
-            log(`✗ Extension packaging failed: ${error.message}`, colors.red);
+            log(`Extension packaging failed: ${error.message}`, colors.red);
             testResults.failed.push('Extension packaging');
         }
         
@@ -189,10 +189,10 @@ async function testExtensionCommands(): Promise<void> {
             
             for (const cmd of commands) {
                 if (extensionContent.includes(`'${cmd}'`)) {
-                    log(`✓ Command '${cmd}' is registered`, colors.green);
+                    log(`Command '${cmd}' is registered`, colors.green);
                     testResults.passed.push(`Command: ${cmd}`);
                 } else {
-                    log(`✗ Command '${cmd}' not found in extension`, colors.red);
+                    log(`Command '${cmd}' not found in extension`, colors.red);
                     testResults.failed.push(`Command: ${cmd}`);
                 }
             }
@@ -203,16 +203,16 @@ async function testExtensionCommands(): Promise<void> {
         const packageJson = JSON.parse(fs.readFileSync(packageJsonPath, 'utf8'));
         
         if (packageJson.contributes?.configuration?.properties?.['traverse-lsp.enableChunking']) {
-            log('✓ Chunking configuration found in package.json', colors.green);
+            log('Chunking configuration found in package.json', colors.green);
             testResults.passed.push('Chunking configuration');
             
             const chunkingConfig = packageJson.contributes.configuration.properties['traverse-lsp.enableChunking'];
             if (chunkingConfig.type === 'boolean' && chunkingConfig.default === false) {
-                log('✓ Chunking configuration has correct type and default value', colors.green);
+                log('Chunking configuration has correct type and default value', colors.green);
                 testResults.passed.push('Chunking configuration validation');
             }
         } else {
-            log('✗ Chunking configuration not found in package.json', colors.red);
+            log('Chunking configuration not found in package.json', colors.red);
             testResults.failed.push('Chunking configuration');
         }
         
@@ -229,7 +229,7 @@ async function testExtensionCommands(): Promise<void> {
             fs.mkdirSync(dirPath, { recursive: true });
             
             if (fs.existsSync(dirPath)) {
-                log(`✓ Output directory '${dir}' can be created`, colors.green);
+                log(`Output directory '${dir}' can be created`, colors.green);
                 testResults.passed.push(`Output directory: ${dir}`);
             }
         }
@@ -245,13 +245,13 @@ async function testExtensionCommands(): Promise<void> {
     
     log(`\nPassed: ${testResults.passed.length}`, colors.green);
     testResults.passed.forEach(test => {
-        log(`  ✓ ${test}`, colors.green);
+        log(`  ${test}`, colors.green);
     });
     
     if (testResults.failed.length > 0) {
         log(`\nFailed: ${testResults.failed.length}`, colors.red);
         testResults.failed.forEach(test => {
-            log(`  ✗ ${test}`, colors.red);
+            log(`  ${test}`, colors.red);
         });
     }
     
